@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FWD Malaysia — June 2026 Performance Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root{
+    --ink:#151a24;
+    --ink-soft:#4d5566;
+    --ink-faint:#8891a3;
+    --paper:#f7f6f2;
+    --card:#ffffff;
+    --line:#e7e4db;
+    --fwd:#ff5f1f;
+    --fwd-deep:#c9410a;
+    --fwd-tint:#fff1e8;
+    --navy:#141c33;
+    --navy-tint:#eef1f8;
+    --teal:#0f7a6e;
+    --teal-tint:#e6f5f2;
+    --radius:14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ink:#f2f1ec;
+      --ink-soft:#c3c2b7;
+      --ink-faint:#8f8d84;
+      --paper:#111214;
+      --card:#191a1d;
+      --line:#2c2c2a;
+      --fwd-tint:#3a2216;
+      --navy-tint:#1b2436;
+      --teal-tint:#122824;
+    }
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{font-family:'Space Grotesk',sans-serif;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 80px;}
+  .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:8px;}
+  .brandmark{display:flex;align-items:center;gap:10px;}
+  .brandmark .dot{width:14px;height:14px;border-radius:3px;background:var(--fwd);transform:rotate(45deg);flex:none;}
+  .brandmark span{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:500;}
+  h1{font-size:clamp(26px,4vw,38px);font-weight:600;line-height:1.15;margin:10px 0 6px;letter-spacing:-0.01em;}
+  .subline{color:var(--ink-soft);font-size:15px;max-width:640px;}
+  .meta-pills{display:flex;gap:8px;flex-wrap:wrap;}
+  .pill{border:1px solid var(--line);border-radius:100px;padding:6px 13px;font-size:12.5px;color:var(--ink-soft);background:var(--card);white-space:nowrap;}
+  .pill b{color:var(--ink);font-weight:600;}
+  .notice{margin:22px 0 32px;border:1px solid var(--line);border-left:3px solid var(--fwd);background:var(--fwd-tint);border-radius:0 10px 10px 0;padding:14px 18px;font-size:13.5px;color:var(--ink-soft);line-height:1.6;}
+  .notice b{color:var(--ink);}
+  .section-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:44px 0 16px;flex-wrap:wrap;}
+  .section-head h2{font-size:19px;font-weight:600;margin:0;letter-spacing:-.01em;}
+  .section-head .idx{font-size:12px;color:var(--fwd-deep);font-weight:600;letter-spacing:.08em;margin-right:8px;}
+  .section-note{font-size:12.5px;color:var(--ink-faint);}
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 18px 16px;position:relative;overflow:hidden;}
+  .kpi .label{font-size:12px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;font-weight:500;}
+  .kpi .value{font-size:26px;font-weight:600;font-family:'Space Grotesk',sans-serif;letter-spacing:-0.01em;}
+  .kpi .value sup{font-size:14px;font-weight:500;color:var(--ink-faint);margin-left:2px;}
+  .kpi .delta{margin-top:8px;font-size:12.5px;font-weight:500;display:inline-flex;align-items:center;gap:4px;}
+  .delta.up{color:var(--teal);}
+  .delta.down{color:var(--fwd-deep);}
+  .delta.flat{color:var(--ink-faint);}
+  .grid-2{display:grid;grid-template-columns:1.15fr 0.85fr;gap:16px;align-items:stretch;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;}
+  .card h3{font-size:14.5px;font-weight:600;margin:0 0 4px;}
+  .card .cardsub{font-size:12.5px;color:var(--ink-faint);margin-bottom:16px;}
+  .legend-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px;}
+  .legend-item{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink-soft);}
+  .swatch{width:10px;height:10px;border-radius:3px;flex:none;}
+  .channel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .channel-card{border:1px solid var(--line);border-radius:12px;padding:16px 16px 14px;background:var(--card);}
+  .channel-card .ctag{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:3px 9px;border-radius:100px;margin-bottom:12px;}
+  .ctag.video{background:var(--navy-tint);color:var(--navy);}
+  .ctag.demand{background:var(--teal-tint);color:var(--teal);}
+  .ctag.search{background:var(--fwd-tint);color:var(--fwd-deep);}
+  .channel-card .cspend{font-size:22px;font-weight:600;font-family:'Space Grotesk',sans-serif;}
+  .channel-card .crow{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-soft);padding:6px 0;border-top:1px solid var(--line);}
+  .channel-card .crow:first-of-type{border-top:none;margin-top:12px;padding-top:0;}
+  .channel-card .crow span:last-child{color:var(--ink);font-weight:500;font-family:'JetBrains Mono',monospace;font-size:12px;}
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);}
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:760px;}
+  thead th{text-align:left;padding:12px 14px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);font-weight:600;border-bottom:1px solid var(--line);white-space:nowrap;cursor:pointer;user-select:none;}
+  thead th:hover{color:var(--ink);}
+  thead th .arrow{font-size:9px;margin-left:3px;opacity:.5;}
+  tbody td{padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap;color:var(--ink-soft);}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:var(--paper);}
+  td.name{color:var(--ink);font-weight:500;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  td.num{font-family:'JetBrains Mono',monospace;font-size:12px;text-align:right;}
+  .status-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px;}
+  .status-badge.enabled{background:var(--teal-tint);color:var(--teal);}
+  .status-badge.paused{background:var(--line);color:var(--ink-faint);}
+  .chip-channel{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:.03em;}
+  .chip-channel.video{background:var(--navy-tint);color:var(--navy);}
+  .chip-channel.demand{background:var(--teal-tint);color:var(--teal);}
+  .chip-channel.search{background:var(--fwd-tint);color:var(--fwd-deep);}
+  .campaign-cards{display:none;}
+  .ccard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px;}
+  .ccard .ctop{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px;}
+  .ccard .cname{font-size:13.5px;font-weight:500;color:var(--ink);line-height:1.35;word-break:break-word;}
+  .ccard .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;margin-top:10px;}
+  .ccard .cstat{font-size:12px;}
+  .ccard .cstat .l{color:var(--ink-faint);display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;}
+  .ccard .cstat .v{font-family:'JetBrains Mono',monospace;color:var(--ink);font-size:12.5px;}
+  .finding{display:flex;gap:12px;padding:14px 0;border-top:1px solid var(--line);}
+  .finding:first-child{border-top:none;padding-top:2px;}
+  .finding .fmark{flex:none;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px;}
+  .fmark.win{background:var(--teal-tint);color:var(--teal);}
+  .fmark.risk{background:var(--fwd-tint);color:var(--fwd-deep);}
+  .finding .ftext{font-size:13.5px;color:var(--ink-soft);line-height:1.55;}
+  .finding .ftext b{color:var(--ink);font-weight:600;}
+  .rec-row{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;padding:13px 0;border-top:1px solid var(--line);}
+  .rec-row:first-child{border-top:none;}
+  .rec-title{font-size:13px;color:var(--ink);font-weight:500;}
+  .rec-why{font-size:12px;color:var(--ink-faint);margin-top:2px;}
+  .tag{font-size:10.5px;font-weight:600;padding:4px 10px;border-radius:100px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;}
+  .tag.now{background:var(--fwd);color:#fff;}
+  .tag.next{background:var(--navy-tint);color:var(--navy);}
+  .tag.later{background:var(--line);color:var(--ink-faint);}
+  .tag.impact-high{background:var(--teal-tint);color:var(--teal);}
+  .tag.impact-med{background:var(--fwd-tint);color:var(--fwd-deep);}
+  footer{margin-top:52px;padding-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink-faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+  @media (max-width:860px){
+    .kpi-grid{grid-template-columns:repeat(2,1fr);}
+    .grid-2{grid-template-columns:1fr;}
+    .channel-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:680px){
+    .wrap{padding:20px 14px 60px;}
+    .table-wrap{display:none;}
+    .campaign-cards{display:block;}
+    .rec-row{grid-template-columns:1fr;gap:8px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <div class="brandmark"><span class="dot"></span><span>FWD Malaysia · Paid media</span></div>
+      <h1>June 2026 performance report</h1>
+      <p class="subline">Google Ads results across Search, YouTube and Demand Gen for FWD Malaysia — spend, efficiency and campaign detail for the month.</p>
+    </div>
+    <div class="meta-pills">
+      <div class="pill">Period <b>Jun 1–30, 2026</b></div>
+      <div class="pill">vs <b>May 2026</b></div>
+      <div class="pill">Currency <b>MYR</b></div>
+    </div>
+  </div>
+  <div class="notice">
+    <b>Scope note.</b> This report covers Google Ads only — the platform currently connected for FWD Malaysia. If campaigns are running on Meta, LinkedIn, TikTok or elsewhere, those aren't reflected here yet. Currency is assumed MYR based on the account's market; please confirm against billing.
+  </div>
+
+  <div class="section-head"><h2><span class="idx">01</span>Headline numbers</h2></div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="label">Total spend</div><div class="value">RM 23,228<sup>.15</sup></div><div class="delta flat">Mixed vs May — new + winding-down campaigns</div></div>
+    <div class="kpi"><div class="label">Conversions</div><div class="value">2,645</div><div class="delta flat">Blended across channels</div></div>
+    <div class="kpi"><div class="label">Cost / conversion</div><div class="value">RM 8.78</div><div class="delta flat">Blended average</div></div>
+    <div class="kpi"><div class="label">Conversion value</div><div class="value">RM 393</div><div class="delta down">Only Video + Demand Gen carry value</div></div>
+  </div>
+
+  <div class="section-head"><h2><span class="idx">02</span>Spend by channel</h2><span class="section-note">Search drives volume, Video carries the spend</span></div>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Spend and conversion value by channel</h3>
+      <div class="cardsub">RM, June 2026</div>
+      <div style="position:relative;height:230px;">
+        <canvas id="channelChart" role="img" aria-label="Bar chart comparing Google Ads spend and conversion value for Video, Demand Gen and Search channels in June 2026">Video: RM 13,266 spend, RM 288 value. Demand Gen: RM 2,467 spend, RM 105 value. Search: RM 7,495 spend, RM 0 value.</canvas>
+      </div>
+      <div class="legend-row" id="channelLegend"></div>
+    </div>
+    <div class="card">
+      <h3>Where the clicks come from</h3>
+      <div class="cardsub">Share of 78,774 total clicks</div>
+      <div style="position:relative;height:230px;">
+        <canvas id="clickChart" role="img" aria-label="Doughnut chart showing share of clicks by channel: Demand Gen 88 percent, Search 7 percent, Video 5 percent">Demand Gen 69,309 clicks, Search 5,791 clicks, Video 3,674 clicks.</canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-head" style="margin-top:28px;"><h2><span class="idx">03</span>Channel breakdown</h2></div>
+  <div class="channel-grid">
+    <div class="channel-card"><span class="ctag video">Video · YouTube</span><div class="cspend">RM 13,266</div><div class="crow"><span>Conversions</span><span>288</span></div><div class="crow"><span>Cost / conversion</span><span>RM 46.06</span></div><div class="crow"><span>Conversion value</span><span>RM 288</span></div><div class="crow"><span>ROAS</span><span>0.02</span></div></div>
+    <div class="channel-card"><span class="ctag demand">Demand Gen</span><div class="cspend">RM 2,467</div><div class="crow"><span>Conversions</span><span>122</span></div><div class="crow"><span>Cost / conversion</span><span>RM 20.22</span></div><div class="crow"><span>Conversion value</span><span>RM 105</span></div><div class="crow"><span>ROAS</span><span>0.04</span></div></div>
+    <div class="channel-card"><span class="ctag search">Search</span><div class="cspend">RM 7,495</div><div class="crow"><span>Conversions</span><span>2,235</span></div><div class="crow"><span>Cost / conversion</span><span>RM 3.35</span></div><div class="crow"><span>Conversion value</span><span>RM 0 (unvalued action)</span></div><div class="crow"><span>ROAS</span><span>—</span></div></div>
+  </div>
+
+  <div class="section-head" style="margin-top:28px;"><h2><span class="idx">04</span>What stood out</h2></div>
+  <div class="card">
+    <div class="finding"><div class="fmark win">↑</div><div class="ftext"><b>Search brand campaigns are the efficiency leaders.</b> "Brand FWD" and "Brand YouGov" delivered conversions at RM 7.16 and RM 11.04 — well under the RM 8.78 account average.</div></div>
+    <div class="finding"><div class="fmark win">↑</div><div class="ftext"><b>Demand Gen primary-location nearly tripled ROAS</b> (+209% vs May) while cutting spend 86% — a strong efficiency signal, though volume is now small.</div></div>
+    <div class="finding"><div class="fmark risk">!</div><div class="ftext"><b>Three Video campaigns spent RM 3,500+ with zero conversions</b> (brand-primary, brand-secondary, brand-rmkt-primary) — worth confirming whether these are intentional reach-only buys.</div></div>
+    <div class="finding"><div class="fmark risk">!</div><div class="ftext"><b>Search conversions carry no assigned value</b> — 2,235 conversions at RM 0 tracked value understates the account's true blended ROAS.</div></div>
+  </div>
+
+  <div class="section-head" style="margin-top:28px;">
+    <h2><span class="idx">05</span>Campaign detail</h2>
+    <span class="section-note">Tap a column to sort · 13 campaigns</span>
+  </div>
+  <div class="table-wrap">
+    <table id="campaignTable">
+      <thead>
+        <tr>
+          <th data-key="name">Campaign<span class="arrow">↕</span></th>
+          <th data-key="channel">Channel<span class="arrow">↕</span></th>
+          <th data-key="status">Status<span class="arrow">↕</span></th>
+          <th data-key="impr" class="num">Impr.<span class="arrow">↕</span></th>
+          <th data-key="clicks" class="num">Clicks<span class="arrow">↕</span></th>
+          <th data-key="cost" class="num">Cost (RM)<span class="arrow">↕</span></th>
+          <th data-key="conv" class="num">Conv.<span class="arrow">↕</span></th>
+          <th data-key="cpa" class="num">Cost/Conv<span class="arrow">↕</span></th>
+        </tr>
+      </thead>
+      <tbody id="campaignBody"></tbody>
+    </table>
+  </div>
+  <div class="campaign-cards" id="campaignCards"></div>
+
+  <div class="section-head" style="margin-top:28px;"><h2><span class="idx">06</span>Recommendations</h2></div>
+  <div class="card">
+    <div class="rec-row"><div><div class="rec-title">Confirm conversion goals on the 3 zero-conversion Video campaigns</div><div class="rec-why">RM 3,500+ spent with no measured outcome</div></div><span class="tag impact-high">High impact</span><span class="tag now">Immediate</span></div>
+    <div class="rec-row"><div><div class="rec-title">Assign monetary value to Search conversion actions</div><div class="rec-why">Blended ROAS is unreadable without it</div></div><span class="tag impact-high">High impact</span><span class="tag now">Immediate</span></div>
+    <div class="rec-row"><div><div class="rec-title">Shift budget toward Brand FWD and Demand Gen primary-location</div><div class="rec-why">Best cost/conversion and ROAS this month</div></div><span class="tag impact-med">Medium impact</span><span class="tag next">Next sprint</span></div>
+    <div class="rec-row"><div><div class="rec-title">Confirm intended status of Hajj-rider Demand Gen campaigns</div><div class="rec-why">Delivery dropped ~99% — check if intentional</div></div><span class="tag impact-med">Medium impact</span><span class="tag next">Next sprint</span></div>
+    <div class="rec-row"><div><div class="rec-title">Connect other ad platforms if FWD runs spend beyond Google</div><div class="rec-why">This report is Google Ads-only</div></div><span class="tag impact-med">Medium impact</span><span class="tag later">Next quarter</span></div>
+  </div>
+
+  <footer>
+    <span>Source: Supermetrics → Google Ads, FWD Malaysia (7168658166)</span>
+    <span>Comparison period: May 1–31, 2026</span>
+  </footer>
+</div>
+
+<script>
+const CAMPAIGNS = [
+  {name:"youtube_all_br_rch_brand-pros-primary", channel:"Video", status:"enabled", impr:2832448, clicks:2180, cost:6332.45, conv:219, cpa:28.92},
+  {name:"youtube_all_br_rch_brand-pros-secondary", channel:"Video", status:"enabled", impr:1306117, clicks:994, cost:3433.80, conv:69, cpa:49.77},
+  {name:"demand-gen_click_non-stop-rewards_secondary-location", channel:"Demand Gen", status:"paused", impr:1217950, clicks:42150, cost:1573.46, conv:20, cpa:78.67},
+  {name:"youtube_all_br_rch_brand-primary", channel:"Video", status:"paused", impr:745769, clicks:339, cost:1771.23, conv:0, cpa:null},
+  {name:"demand-gen_click_non-stop-rewards_primary-location", channel:"Demand Gen", status:"paused", impr:731204, clicks:27126, cost:882.14, conv:102, cpa:8.65},
+  {name:"youtube_all_br_rch_brand-secondary", channel:"Video", status:"paused", impr:318917, clicks:124, cost:708.08, conv:0, cpa:null},
+  {name:"search_generic_non-stop-rewards", channel:"Search", status:"enabled", impr:46895, clicks:3883, cost:1998.76, conv:1429.9, cpa:1.40},
+  {name:"search_comp_non-stop-rewards", channel:"Search", status:"enabled", impr:44123, clicks:1321, cost:2699.30, conv:428.9, cpa:6.29},
+  {name:"youtube_all_br_rch_brand-rmkt-primary", channel:"Video", status:"enabled", impr:43886, clicks:37, cost:1020.72, conv:0, cpa:null},
+  {name:"search_brand_fwd", channel:"Search", status:"enabled", impr:8266, clicks:554, cost:2499.13, conv:348.9, cpa:7.16},
+  {name:"demand-gen_hajj-rider_malay", channel:"Demand Gen", status:"paused", impr:1736, clicks:12, cost:8.32, conv:0, cpa:null},
+  {name:"demand-gen_hajj-rider_non-malay", channel:"Demand Gen", status:"paused", impr:989, clicks:21, cost:2.75, conv:0, cpa:null},
+  {name:"search_brand_yougov", channel:"Search", status:"enabled", impr:414, clicks:33, cost:298.01, conv:27, cpa:11.04},
+];
+
+const fmtInt = n => new Intl.NumberFormat('en-MY').format(Math.round(n));
+const fmtMoney = n => 'RM ' + new Intl.NumberFormat('en-MY', {minimumFractionDigits:2, maximumFractionDigits:2}).format(n);
+function channelClass(name){ return name === "Video" ? "video" : name === "Demand Gen" ? "demand" : "search"; }
+
+function renderTable(rows){
+  const body = document.getElementById('campaignBody');
+  body.innerHTML = rows.map(r => `
+    <tr>
+      <td class="name" title="${r.name}">${r.name}</td>
+      <td><span class="chip-channel ${channelClass(r.channel)}">${r.channel}</span></td>
+      <td><span class="status-badge ${r.status}">${r.status === 'enabled' ? 'Active' : 'Paused'}</span></td>
+      <td class="num">${fmtInt(r.impr)}</td>
+      <td class="num">${fmtInt(r.clicks)}</td>
+      <td class="num">${fmtMoney(r.cost)}</td>
+      <td class="num">${fmtInt(r.conv)}</td>
+      <td class="num">${r.cpa === null ? '—' : fmtMoney(r.cpa)}</td>
+    </tr>
+  `).join('');
+
+  const cards = document.getElementById('campaignCards');
+  cards.innerHTML = rows.map(r => `
+    <div class="ccard">
+      <div class="ctop">
+        <div class="cname">${r.name}</div>
+        <span class="status-badge ${r.status}">${r.status === 'enabled' ? 'Active' : 'Paused'}</span>
+      </div>
+      <span class="chip-channel ${channelClass(r.channel)}">${r.channel}</span>
+      <div class="cgrid">
+        <div class="cstat"><span class="l">Impressions</span><span class="v">${fmtInt(r.impr)}</span></div>
+        <div class="cstat"><span class="l">Clicks</span><span class="v">${fmtInt(r.clicks)}</span></div>
+        <div class="cstat"><span class="l">Cost</span><span class="v">${fmtMoney(r.cost)}</span></div>
+        <div class="cstat"><span class="l">Cost/Conv</span><span class="v">${r.cpa === null ? '—' : fmtMoney(r.cpa)}</span></div>
+      </div>
+    </div>
+  `).join('');
+}
+renderTable(CAMPAIGNS);
+
+let sortState = {key:'cost', dir:-1};
+document.querySelectorAll('#campaignTable thead th').forEach(th => {
+  th.addEventListener('click', () => {
+    const key = th.dataset.key;
+    sortState.dir = (sortState.key === key) ? -sortState.dir : -1;
+    sortState.key = key;
+    const sorted = [...CAMPAIGNS].sort((a,b) => {
+      let va = a[key], vb = b[key];
+      if (key === 'cpa') { va = va === null ? -1 : va; vb = vb === null ? -1 : vb; }
+      if (typeof va === 'string') return va.localeCompare(vb) * sortState.dir;
+      return (va - vb) * sortState.dir;
+    });
+    renderTable(sorted);
+  });
+});
+
+new Chart(document.getElementById('channelChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Video', 'Demand Gen', 'Search'],
+    datasets: [
+      { label: 'Spend (RM)', data: [13266.28, 2466.66, 7495.21], backgroundColor: '#141c33', borderRadius: 4, maxBarThickness: 34 },
+      { label: 'Conversion value (RM)', data: [288, 105, 0], backgroundColor: '#ff5f1f', borderRadius: 4, maxBarThickness: 34 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, grid: { color: 'rgba(140,140,130,0.15)' }, ticks: { color: '#8891a3', font: {size:11} } },
+      x: { grid: { display: false }, ticks: { color: '#8891a3', font: {size:12} } }
+    }
+  }
+});
+document.getElementById('channelLegend').innerHTML = `
+  <span class="legend-item"><span class="swatch" style="background:#141c33"></span>Spend</span>
+  <span class="legend-item"><span class="swatch" style="background:#ff5f1f"></span>Conversion value</span>
+`;
+
+new Chart(document.getElementById('clickChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Demand Gen', 'Search', 'Video'],
+    datasets: [{
+      data: [69309, 5791, 3674],
+      backgroundColor: ['#0f7a6e', '#ff5f1f', '#141c33'],
+      borderColor: '#ffffff',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, cutout: '68%',
+    plugins: { legend: { display: false } }
+  }
+});
+</script>
+</body>
+</html>
